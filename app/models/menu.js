@@ -9,6 +9,6 @@ const menuSchema = new Schema({
     size: { type: String, required: true}
 })
 
-const Menu = mongoose.model('Menu',menuSchema);
+module.exports = mongoose.model('Menu',menuSchema);
 
-module.exports = Menu;
+// module.exports = Menu;

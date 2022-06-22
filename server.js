@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 const session = require('express-session')
 const flash = require ('express-flash')
 const MongoDbStore = require('connect-mongo')
+const passport = require('passport')
 // Database Connection
 const url = 'mongodb://127.0.0.1:27017/pizza';
 
@@ -20,6 +21,7 @@ const url = 'mongodb://127.0.0.1:27017/pizza';
 //     console.log('Connection failed.....')
 // });
 
+// Database Connection
 mongoose.connect(url,{useNewUrlParser: true});
 const db=mongoose.connection;
 db.once('open',_=>{
@@ -29,11 +31,7 @@ db.once('open',_=>{
 db.on('error',err =>{
     console.log('connection error:',err)
 })
-//session store
-// let mongoStore = new MongoDbStore({
-//     mongooseConnection: db,
-//     collection: 'sessions'
-// })
+
 
 // Session config
 app.use(session({
@@ -46,15 +44,23 @@ app.use(session({
     cookie: {maxAge:1000*60*60*24} // 24 hours
 }))
 
+// Passport config
+const passportInit = require('./app/config/passport')
+passportInit(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use(flash())
 
 // Assets
 app.use(express.static('public')) 
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 //Global Middleware
 app.use((req,res,next) => {
     res.locals.session = req.session
+    res.locals.user = req.user
     next()
 })
 
@@ -66,12 +72,6 @@ app.set('view engine', 'ejs')
 
 
 require('./routes/web')(app)
-
-
-
-// app.get('/register',(req,res) =>{
-//     res.render('auth/register')
-// })
 
 app.listen(PORT,() => {
     console.log(`Listening on port ${PORT}`)
