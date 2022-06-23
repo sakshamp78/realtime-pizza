@@ -12,7 +12,7 @@ const MongoDbStore = require('connect-mongo')
 const passport = require('passport')
 const Emitter = require('events')
 // Database Connection
-const url = 'mongodb://127.0.0.1:27017/pizza';
+// const url = 'mongodb://127.0.0.1:27017/pizza';
 
 // mongoose.connect(url, {useNewUrlParser: true, useCreateIndex:true, useUnifiedTopology: true, useFindAndModify: true});
 // const connection = mongoose.connection;
@@ -23,10 +23,10 @@ const url = 'mongodb://127.0.0.1:27017/pizza';
 // });
 
 // Database Connection
-mongoose.connect(url,{useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_CONNECTION_URL,{useNewUrlParser: true});
 const db=mongoose.connection;
 db.once('open',_=>{
-    console.log('Database connected:',url)
+    console.log('Database connected:',process.env.MONGO_CONNECTION_URL)
 })
 
 db.on('error',err =>{
@@ -39,7 +39,7 @@ app.use(session({
     secret: 'jhvhg cgfcgfcgf',
     resave: false,
     store: MongoDbStore.create({
-        mongoUrl: url
+        mongoUrl: process.env.MONGO_CONNECTION_URL
     }),
     saveUninitialized: false,
     cookie: {maxAge:1000*60*60*24} // 24 hours
@@ -78,6 +78,9 @@ app.set('view engine', 'ejs')
 
 
 require('./routes/web')(app)
+app.use((req,res)=>{
+    res.status(404).render('errors/404')
+})
 
 const server = app.listen(PORT,() => {
                 console.log(`Listening on port ${PORT}`)
