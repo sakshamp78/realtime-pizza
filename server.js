@@ -27,7 +27,7 @@ const Emitter = require('events')
 mongoose.connect(process.env.MONGO_CONNECTION_URL,{useNewUrlParser: true});
 const db=mongoose.connection;
 db.once('open',_=>{
-    console.log('Database connected:',process.env.MONGO_CONNECTION_URL)
+    console.log('Database connected')
 })
 
 db.on('error',err =>{

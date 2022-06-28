@@ -9,7 +9,8 @@
     "dev": "nodemon server.js",
     "development": "mix",
     "watch": "mix watch",
-    "production": "mix --production"
+    "production": "mix --production",
+    "start": "node index.js"
   },
   "license": "MIT",
   "dependencies": {
