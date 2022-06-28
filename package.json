@@ -10,7 +10,7 @@
     "development": "mix",
     "watch": "mix watch",
     "production": "mix --production",
-    "start": "node index.js"
+    "start": "node public/js/app.js"
   },
   "license": "MIT",
   "dependencies": {
